@@ -2,8 +2,11 @@ from elasticsearch import Elasticsearch
 
 
 elastic_client = Elasticsearch(
-    hosts=["http://localhost:9200"]
+    hosts=["http://localhost:9200"],
+    basic_auth=("elastic", "123456"),
+    verify_certs=False
 )
+
 try:
     info = elastic_client.info()
 except Exception as e:

@@ -10,7 +10,7 @@ load_dotenv(verbose=True)
 
 def consume():
     consumer = KafkaConsumer(
-        os.environ['INSERT_REVIEW'],
+        os.environ['INSERT_ELASTIC'],
         bootstrap_servers=os.environ['BOOTSTRAP_SERVERS'],
         value_deserializer= lambda value: json.loads(value.decode('utf-8')),
         auto_offset_reset='latest'
