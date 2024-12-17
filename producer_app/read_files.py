@@ -41,7 +41,7 @@ neo4j_topic = os.environ['INSERT_NEO$J']
 
 def read_students_profile():
     students_profile = read_csv(students_profile_path)
-    batch_size = 200
+    batch_size = 1000
     batch = []
 
     for student in students_profile:
@@ -49,15 +49,18 @@ def read_students_profile():
 
         if len(batch) == batch_size:
             produce(mongo_topic, batch, 'profile')
+            produce(psql_topic, batch, 'profile')
             batch = []
 
     if batch:
         produce(mongo_topic, batch, 'profile')
+        produce(psql_topic, batch, 'profile')
+
 
 
 def read_student_life_style():
     students_life_style = read_csv(students_life_style_path)
-    batch_size = 200
+    batch_size = 1000
     batch = []
 
     for life_style in students_life_style:
@@ -65,14 +68,16 @@ def read_student_life_style():
 
         if len(batch) == batch_size:
             produce(mongo_topic, batch, 'life style')
+            produce(psql_topic, batch, 'life style')
             batch = []
     if batch:
         produce(mongo_topic, batch, 'life style')
+        produce(psql_topic, batch, 'life style')
 
 
 def read_students_course_performance():
     students_course_performance = read_csv(students_course_performance_path)
-    batch_size = 200
+    batch_size = 1000
     batch = []
 
     for performance in students_course_performance:
@@ -80,15 +85,17 @@ def read_students_course_performance():
 
         if len(batch) == batch_size:
             produce(mongo_topic, batch, 'performance')
+            produce(psql_topic, batch, 'performance')
             batch = []
 
     if batch:
         produce(mongo_topic, batch, 'performance')
+        produce(psql_topic, batch, 'performance')
 
 
 def read_reviews_students():
     reviews_students = read_csv(reviews_students_path)
-    batch_size = 200
+    batch_size = 1000
     mongo_batch = []
     elastic_batch = []
 
@@ -98,6 +105,7 @@ def read_reviews_students():
 
         if len(mongo_batch) == batch_size:
             produce(mongo_topic, mongo_batch, 'review')
+            produce(psql_topic, mongo_batch, 'review')
             produce(elastic_topic, elastic_batch, 'review')
             mongo_batch = []
             elastic_batch = []
@@ -105,49 +113,56 @@ def read_reviews_students():
     if mongo_batch:
         produce(mongo_topic, mongo_batch, 'review')
         produce(elastic_topic, elastic_batch, 'review')
+        produce(psql_topic, elastic_batch, 'review')
 
 
-def send_batch_to_mongo(topic, batch, batch_type):
+def produce_batch(topic, batch, batch_type):
     if batch:
         produce(topic, batch, batch_type)
 
 
 def process_teachers(teachers):
     teacher_batch = []
-    batch_size = 200
+    batch_size = 1000
     for teacher in teachers:
         teacher_batch.append(teacher)
         if len(teacher_batch) == batch_size:
-            send_batch_to_mongo(mongo_topic, teacher_batch, 'teacher')
+            produce_batch(mongo_topic, teacher_batch, 'teacher')
+            produce_batch(psql_topic, teacher_batch, 'teacher')
             teacher_batch = []
 
-    send_batch_to_mongo(mongo_topic, teacher_batch, 'teacher')
+    produce_batch(mongo_topic, teacher_batch, 'teacher')
+    produce_batch(psql_topic, teacher_batch, 'teacher')
 
 
 def process_classes(classes):
     class_batch = []
-    batch_size = 200
+    batch_size = 1000
     for cla in classes:
         class_batch.append(cla)
         if len(class_batch) == batch_size:
-            send_batch_to_mongo(mongo_topic, class_batch, 'class')
+            produce_batch(mongo_topic, class_batch, 'class')
+            produce_batch(psql_topic, class_batch, 'class')
             class_batch = []
 
-    send_batch_to_mongo(mongo_topic, class_batch, 'class')
+    produce_batch(mongo_topic, class_batch, 'class')
+    produce_batch(psql_topic, class_batch, 'class')
 
 
 def process_relationships(relationships):
     relation_batch = []
-    batch_size = 200
+    batch_size = 1000
     for relation in relationships:
         relation_batch.append(relation)
         if len(relation_batch) == batch_size:
-            send_batch_to_mongo(mongo_topic, relation_batch, 'relation')
-            send_batch_to_mongo(neo4j_topic, relation_batch, 'relation')
+            produce_batch(mongo_topic, relation_batch, 'relation')
+            produce_batch(neo4j_topic, relation_batch, 'relation')
+            produce_batch(psql_topic, relation_batch, 'relation')
             relation_batch = []
 
-    send_batch_to_mongo(mongo_topic, relation_batch, 'relation')
-    send_batch_to_mongo(neo4j_topic, relation_batch, 'relation')
+    produce_batch(mongo_topic, relation_batch, 'relation')
+    produce_batch(neo4j_topic, relation_batch, 'relation')
+    produce_batch(psql_topic, relation_batch, 'relation')
 
 
 def read_academic_network():
@@ -159,10 +174,10 @@ def read_academic_network():
 
 
 def read_all_files():
-    # read_students_profile()
-    # read_student_life_style()
-    # read_students_course_performance()
+    read_students_profile()
+    read_student_life_style()
+    read_students_course_performance()
     # read_reviews_students()
-    read_academic_network()
+    # read_academic_network()
 
     return

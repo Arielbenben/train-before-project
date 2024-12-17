@@ -3,6 +3,8 @@ from sqlalchemy.orm import relationship
 from psql_consumer_app.db.models import Base
 
 
+
+
 class Teacher(Base):
     __tablename__ = 'teacher'
 
@@ -13,4 +15,5 @@ class Teacher(Base):
     office = Column(String, nullable=False)
     email = Column(String, nullable=False)
 
-    classes = relationship('Class', backref='teacher')
+    classes = relationship('Class', back_populates='teacher')
+    relationship = relationship('Relationship', back_populates='teacher')

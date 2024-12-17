@@ -20,6 +20,7 @@ def insert_review_to_elastic(reviews: list):
     except Exception as e:
         return {'Error': f'Exception occurred: {str(e)}'}
 
+
 def get_data():
     try:
         response = elastic_client.search(index=review_index, body={"query": {"match_all": {}}}, size=10000)  # Adjust size for your needs
@@ -27,4 +28,9 @@ def get_data():
         return reviews
     except Exception as e:
         raise RuntimeError(f"Error fetching data from index '{review_index}': {e}")
-print(get_data())
+
+
+def delete_all():
+    elastic_client.delete_by_query(index=review_index, body={"query": {"match_all": {}}})
+
+# print(get_data())

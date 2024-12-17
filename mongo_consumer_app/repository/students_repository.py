@@ -6,18 +6,23 @@ def insert_student(student: list):
     student_collection.insert_many(student)
 
 
+def remove_field_student_id(dic: dict):
+    dic.pop('student_id', None)
+    return dic
+
+
 def insert_life_style(life_styles: list):
     for life_style in life_styles:
         student_collection.update_one(
-            {'id': life_style['Student_ID']},
-            {'$set': life_style}
+            {'id': life_style['student_id']},
+            {'$set': {'life_style': remove_field_student_id(life_style)}}
         )
 
 def insert_performance(performances: list):
     for performance in performances:
         student_collection.update_one(
             {'id': performance['student_id']},
-            {'$set': performance}
+            {'$set': {'performance': remove_field_student_id(performance)}}
         )
 
 

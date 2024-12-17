@@ -1,8 +1,7 @@
 from sqlalchemy import Column, Integer, ForeignKey, String, Float
 from sqlalchemy.orm import relationship
-
 from psql_consumer_app.db.models import Base
-from psql_consumer_app.db.models.student import Student
+
 
 
 class Performance(Base):

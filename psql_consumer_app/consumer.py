@@ -2,9 +2,8 @@ import json
 import os
 from dotenv import load_dotenv
 from kafka import KafkaConsumer
-from mongo_consumer_app.repository.students_repository import insert_relationship
 from psql_consumer_app.psql_repository import insert_student, insert_life_style, insert_performance, insert_review, \
-    insert_teacher, insert_class
+    insert_teacher, insert_class, insert_relation
 
 
 load_dotenv(verbose=True)
@@ -33,6 +32,6 @@ def consume():
             case 'class':
                 insert_class(message.value)
             case 'relation':
-                insert_relationship(message.value)
+                insert_relation(message.value)
 
         print(f"Recieved: {message.key}: {message.value}")
